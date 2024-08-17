@@ -2,12 +2,12 @@ using System.Reflection;
 using BepInEx.Configuration;
 using BepInEx.Logging;
 
-namespace PluginName.Settings;
+namespace GameSpeed.Settings;
 
 public class Config {
     public static void Load(ConfigFile configFile, ManualLogSource logger, string worldType) {
         // Settings setup
-        ENV.Testing.Setup();
+        ENV.Settings.Setup();
         Utils.Settings.Config.Setup(MyPluginInfo.PLUGIN_GUID, configFile);
         Utils.Settings.Config.Load(); // just load this after setup all actions.
 

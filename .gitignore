@@ -403,4 +403,5 @@ Config.xml
 build
 dist
 .vscode
-dlls
+lib/*
+!lib/interop

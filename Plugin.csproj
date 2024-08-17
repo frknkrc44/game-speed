@@ -2,24 +2,25 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <ProjectName>PluginName</ProjectName>
-    <AssemblyName>PluginName</AssemblyName>
-    <RootNamespace>PluginName</RootNamespace>
-    <Description>My first plugin</Description>
-    <Version>1.0.0</Version>
+    <AssemblyName>GameSpeed</AssemblyName>
+    <RootNamespace>GameSpeed</RootNamespace>
+    <Description>A plugin that allows players to adjust the game speed according to their preferences.</Description>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
-
-    <RestoreAdditionalProjectSources>
-      https://api.nuget.org/v3/index.json;
-      https://nuget.bepinex.dev/v3/index.json
-    </RestoreAdditionalProjectSources>
+    <DistFiles>$(AssemblyName).dll;UniverseLib.BIE.IL2CPP.Interop.dll</DistFiles>
   </PropertyGroup>
 
 
   <Import Project="Config.xml" Condition=" '$(Configuration)' == 'Test'" />
-  <Target Name="CopyDLLs" AfterTargets="AfterBuild" Condition=" '$(Configuration)' == 'Test'">
-    <Copy SourceFiles="$(TargetDir)$(AssemblyName).dll" DestinationFolder="$(BuildDestinationFolder)/Test" />
+  <ItemGroup>
+    <DistFiles Include="$(DistFiles)"/>
+    <DistDir Include="$(ProjectDir)dist" Condition="'$(Configuration)' == 'Release'"/>
+    <DistDir Include="$(BuildDestinationFolder)Test-$(AssemblyName)" Condition="'$(Configuration)' == 'Test'"/>
+  </ItemGroup>
+
+  <Target Name="CopyDLLs" AfterTargets="AfterBuild" Outputs="%(DistFiles.Identity)">
+    <Message Importance="High" Text="Copying %(DistFiles.Identity) to %22@(DistDir)%22" />
+    <Copy SourceFiles="$(TargetDir)%(DistFiles.Identity)" DestinationFolder="@(DistDir)" />
   </Target>
 
   <ItemGroup>
@@ -27,6 +28,7 @@
     <PackageReference Include="BepInEx.Core" Version="6.0.0-be.*" IncludeAssets="compile" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
 
-    <!-- <Reference Include=".\dlls\*.dll" /> -->
+    <Reference Include=".\lib\*.dll" />
+    <Reference Include=".\lib\interop\*.dll" />
   </ItemGroup>
 </Project>

@@ -7,6 +7,10 @@ submodule-update:
 choco-setup:
 	choco install dotnet-6.0-sdk
 
+open-game:
+	@echo Starting game...
+	@'C:\Program Files (x86)\Steam\steam' -applaunch $(GAME_ID)
+
 restore-release:
 	@dotnet restore /p:Configuration=Release
 

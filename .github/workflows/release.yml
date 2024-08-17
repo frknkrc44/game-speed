@@ -2,19 +2,56 @@ name: Release
 
 on:
   release:
-    types: [published]
-  workflow_dispatch:
-    inputs:
-      tag_name:
-        required: true
-        description: The tag to release.
-        type: string
+    types:
+     - published
+     - released
 
 jobs:
+  prepare-inputs:
+    name: Prepare Inputs
+    runs-on: ubuntu-latest
+    outputs:
+      mod_description: ${{ steps.populate_value.outputs.mod_description }}
+      mod_name: ${{ steps.populate_value.outputs.mod_name }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download Dasel
+        run: curl -s https://api.github.com/repos/tomwright/dasel/releases/latest | grep browser_download_url | grep linux_amd64 | cut -d '"' -f 4 | wget -qi - && mv dasel_linux_amd64 dasel && chmod +x dasel && mv ./dasel /usr/local/bin/dasel && dasel --version
+
+      - name: Populate Inputs
+        id: populate_value
+        run: |
+          echo "mod_description=$(dasel -f Plugin.csproj -r xml .Project.PropertyGroup.Description)" >> "$GITHUB_OUTPUT"
+          echo "mod_name=$(dasel -f Plugin.csproj -r xml .Project.PropertyGroup.AssemblyName)" >> "$GITHUB_OUTPUT"
+
+  release_on_github:
+    name: Release On Github
+    runs-on: ubuntu-latest
+    needs: prepare-inputs
+    steps:
+      - uses: actions/checkout@v4
+      - name: Notify Webhook
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          title: "New `${{ needs.prepare-inputs.outputs.mod_name }}` Release"
+          description: |
+            ${{ needs.prepare-inputs.outputs.mod_description }}
+
+            Version `${{ github.event.release.tag_name }}`
+            Click [here](${{ github.event.release.html_url }}) to download!
+          image: https://github.com/caioreix/game-speed/blob/main/icon.png?raw=true
+          color: 0xe6eaeb
+          username: Github Release
+          avatar_url: https://github.com/caioreix/bepinex-utils/blob/main/static/github.png?raw=true
+          nodetail: true
+
   release_on_thunderstore:
+    if: false
     env:
       RELEASE_TAG: ${{ github.event.inputs.tag_name || github.event.release.tag_name }}
     runs-on: ubuntu-latest
+    needs: prepare-inputs
     steps:
       - name: Checkout
         uses: actions/checkout@v3
