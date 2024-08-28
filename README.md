@@ -1,3 +1,5 @@
+[![](https://dcbadge.limes.pink/api/server/F2usDSCzwX)](https://discord.gg/F2usDSCzwX)
+
 # GameSpeed
 
 Game Speed is a mod that allows players to adjust the game's speed according to their preferences.
@@ -5,7 +7,7 @@ Game Speed is a mod that allows players to adjust the game's speed according to 
 ## Installation (Manual)
 
 - Install [BepInEx-Unity.IL2CPP-(your-os)-x64-6.0.0-be.697](https://builds.bepinex.dev/projects/bepinex_be)
-- Extract [GameSpeed.dll and UniverseLib.BIE.IL2CPP.Interop.dll](https://github.com/caioreix/game-speed/releases) into (GameFolder)/BepInEx/plugins
+- Extract [GameSpeed.zip](https://github.com/caioreix/game-speed/releases) into (GameFolder)/BepInEx/plugins `(preferably use the extract to 'GameSpeed')`
 - Run the game to generate initial config.
 
 ## Installation (ModLoaders)
