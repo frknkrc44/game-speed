@@ -28,12 +28,16 @@ public class KeyBindsBehaviour : MonoBehaviour {
 
         if (InputManager.GetKey(ENV.IncreaseSpeedKey.Value) &&
             !Utils.Database.Cache.IsBlocked(nameof(ENV.IncreaseSpeedKey), threshold)) {
-            ENV.Modifier.Value = (float)Math.Round(ENV.Modifier.Value + ENV.IncreaseDecreaseRate.Value, ENV.RoundDigits.Value);
+            ENV.Modifier.Value = GetSafeModifierValue((float)Math.Round(ENV.Modifier.Value + ENV.IncreaseDecreaseRate.Value, ENV.RoundDigits.Value));
         }
 
         if (InputManager.GetKey(ENV.DecreaseSpeedKey.Value) &&
             !Utils.Database.Cache.IsBlocked(nameof(ENV.DecreaseSpeedKey), threshold)) {
-            ENV.Modifier.Value = (float)Math.Round(ENV.Modifier.Value - ENV.IncreaseDecreaseRate.Value, ENV.RoundDigits.Value);
+            ENV.Modifier.Value = GetSafeModifierValue((float)Math.Round(ENV.Modifier.Value - ENV.IncreaseDecreaseRate.Value, ENV.RoundDigits.Value));
         }
+    }
+
+    private static float GetSafeModifierValue(float value) {
+        return Math.Min(ENV.MaxSpeed.Value, Math.Max(0F, value));
     }
 }

@@ -19,9 +19,20 @@ public class TimePatch {
                 originalTimeScale = value;
 
                 if (ENV.Enabled.Value) {
-                    value *= ENV.Modifier.Value;
+                    if (ENV.UseValueSetterWorkaround.Value) {
+                        if (value != 0) {
+                            value = ENV.DisabledSpeed.Value * ENV.Modifier.Value;
+                        }
+                    } else {
+                        value *= ENV.Modifier.Value;
+                    }
+
                     UIManager.SpeedPanel.SpeedLabel.color = Color.green;
                 } else {
+                    if (value != 0) {
+                        value = ENV.DisabledSpeed.Value;
+                    }
+
                     UIManager.SpeedPanel.SpeedLabel.color = Color.red;
                 }
                 UIManager.SpeedPanel.SpeedLabel.text = string.Format("{0}x", (float)Math.Round(value, ENV.RoundDigits.Value));

@@ -1,3 +1,4 @@
+using System;
 using BepInEx.Configuration;
 // using BepInEx.Unity.IL2CPP.UnityEngine;
 using UnityEngine;
@@ -9,6 +10,9 @@ public static class ENV {
     // Mission_General
     private readonly static string settings = "0.⚙️ Settings";
     public static ConfigElement<bool> Enabled { get; set; }
+    public static ConfigElement<bool> UseValueSetterWorkaround { get; set; }
+    public static ConfigElement<float> DisabledSpeed { get; set; }
+    public static ConfigElement<float> MaxSpeed { get; set; }
     public static ConfigElement<float> Modifier { get; set; }
     public static ConfigElement<float> IncreaseDecreaseRate { get; set; }
     public static ConfigElement<int> RoundDigits { get; set; }
@@ -30,6 +34,27 @@ public static class ENV {
                 nameof(Enabled),
                 true,
                 "Start the game with the speed modifier enabled/disabled"
+            );
+
+            UseValueSetterWorkaround = Utils.Settings.Config.Bind(
+                settings,
+                nameof(UseValueSetterWorkaround),
+                true,
+                "Sets the speed value from DisabledSpeed * MaxSpeed and fixes some pause-resume lags"
+            );
+
+            DisabledSpeed = Utils.Settings.Config.Bind(
+                settings,
+                nameof(DisabledSpeed),
+                1F,
+                "Define the disabled speed. Defaults to 1.0 and only valid if the game is unpaused"
+            );
+
+            MaxSpeed = Utils.Settings.Config.Bind(
+                settings,
+                nameof(MaxSpeed),
+                10F,
+                "Define the maximum speed. Defaults to 10.0"
             );
 
             Modifier = Utils.Settings.Config.Bind(
