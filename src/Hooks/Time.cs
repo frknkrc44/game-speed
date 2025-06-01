@@ -18,29 +18,26 @@ public class TimePatch {
             try {
                 originalTimeScale = value;
 
-                if (ENV.Enabled.Value) {
-                    if (ENV.UseValueSetterWorkaround.Value) {
-                        if (value != 0) {
+                if (value != 0) {
+                    if (ENV.Enabled.Value) {
+                        if (ENV.UseValueSetterWorkaround.Value) {
                             value = ENV.DisabledSpeed.Value * ENV.Modifier.Value;
+                        } else {
+                            value *= ENV.Modifier.Value;
                         }
+
+                        UIManager.SpeedPanel.SpeedLabel.color = Color.green;
                     } else {
-                        value *= ENV.Modifier.Value;
-                    }
-
-                    UIManager.SpeedPanel.SpeedLabel.color = Color.green;
-                } else {
-                    if (value != 0) {
                         value = ENV.DisabledSpeed.Value;
+
+                        UIManager.SpeedPanel.SpeedLabel.color = Color.red;
                     }
-
-                    UIManager.SpeedPanel.SpeedLabel.color = Color.red;
                 }
-                UIManager.SpeedPanel.SpeedLabel.text = string.Format("{0}x", (float)Math.Round(value, ENV.RoundDigits.Value));
 
-                return true; // Continue with the original setter method
+                UIManager.SpeedPanel.SpeedLabel.text = string.Format("{0}x", (float)Math.Round(value, ENV.RoundDigits.Value));
             } catch (Exception e) { Log.Fatal(e); }
 
-            return true;
+            return true; // Continue with the original setter method
         }
     }
 }
